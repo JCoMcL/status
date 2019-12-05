@@ -1,0 +1,6 @@
+condition() {
+	sleep 1s
+}
+action() {
+	date +%a' '%m-%d' '%H:%M:%S
+}

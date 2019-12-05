@@ -1,0 +1,6 @@
+condition() {
+	sleep 1s
+}
+action() {
+	free -m | awk '/^Mem:/ {printf "%i%\n",($3/$2)*100}'
+}

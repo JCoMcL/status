@@ -1,0 +1,17 @@
+#!/bin/sh
+
+DIR=$1
+OUTFILE="$DIR/`basename $2`"
+
+. $2
+
+update() {
+	action > $OUTFILE
+	xsetroot -name "`sed "1n;s/^/ ╲ /g" $DIR/* | tr -d '\n'`"
+}
+
+update
+while condition; do
+	update
+done
+

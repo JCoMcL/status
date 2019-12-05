@@ -1,0 +1,17 @@
+#!/bin/sh
+
+cd `dirname $0`
+
+# this directory is used by systemd for user specific memory
+# any tmpfs or ramfs would work just as well, though any filesystem can be used
+DIR="/run/user/`id -u`/status"
+rm $DIR/*
+
+if [ ! -d $DIR ]; then
+	mkdir $DIR
+fi
+
+for MODULE in `find modules.d/*`; do
+	echo $MODULE
+	./common $DIR $MODULE &
+done

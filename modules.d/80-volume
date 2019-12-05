@@ -1,0 +1,18 @@
+condition() {
+	sh -c '
+	 	echo "$$"	#print id of root process
+		exec pactl subscribe	#make root process
+	' | (
+		read pid 
+		sed -n /sink/q
+		kill $pid	#kill root process
+	)
+}
+action() {
+	sinkname="`pactl info | sed -n 13p | awk '{print $3}'`"
+	
+	pactl list sinks |
+	sed -n "/$sinkname/{n;p;n;n;n;n;n;n;p;q}" |
+	tr -d '\n' | 
+	awk '{print ""$2" "$(NF-3)}'
+}

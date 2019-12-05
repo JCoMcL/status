@@ -1,0 +1,26 @@
+condition() {
+	sh -c '
+	 	echo "$$"	#print id of root process
+		exec acpi_listen	#make root process
+	' | (
+		read pid 
+		sed -n /battery/q
+		kill $pid	#kill root process
+	)
+}
+action() {
+	_cap=`cat /sys/class/power_supply/BAT0/capacity`
+	#_stat=`cat /sys/class/power_supply/BAT0/status`
+	
+	_icon=
+	if [ $_cap -lt 20 ]; then
+		_icon=
+	elif [ $_cap -lt 40 ]; then
+		_icon=
+	elif [ $_cap -lt 60 ]; then
+		_icon=
+	elif [ $_cap -lt 80 ]; then
+		_icon=
+	fi
+	echo "$_icon$_cap%"
+}
