@@ -11,7 +11,11 @@ if [ ! -d $DIR ]; then
 	mkdir $DIR
 fi
 
+trap "kill 0" EXIT
+
 for MODULE in `find modules.d/*`; do
 	echo $MODULE
 	./common $DIR $MODULE &
 done
+
+wait
