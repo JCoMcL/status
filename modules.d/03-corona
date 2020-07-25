@@ -1,8 +1,0 @@
-condition() {
-	sleep 8m
-}
-action() {
-	 curl -s https://corona-stats.online/ireland |
-	 sed -rn "4s/[[:cntrl:]]\[[0-9]{1,3}m//gp" |
-	 awk -F '[[:space:]]*│[[:space:]]*' '{print "🤢"$3" 💀"$5" ▲"$4}'
-}
