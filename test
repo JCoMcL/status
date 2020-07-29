@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source $1
+. $1
 
 action
 while condition; do
