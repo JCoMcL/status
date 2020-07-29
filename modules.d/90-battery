@@ -9,18 +9,29 @@ condition() {
 	)
 }
 action() {
-	_cap=`cat /sys/class/power_supply/BAT0/capacity`
-	#_stat=`cat /sys/class/power_supply/BAT0/status`
-	
-	_icon=
-	if [ $_cap -lt 20 ]; then
-		_icon=
-	elif [ $_cap -lt 40 ]; then
-		_icon=
-	elif [ $_cap -lt 60 ]; then
-		_icon=
-	elif [ $_cap -lt 80 ]; then
-		_icon=
-	fi
-	echo "$_icon$_cap%"
+	_charge="$(cat /sys/class/power_supply/BAT0/capacity)"
+	_status="$(cat /sys/class/power_supply/BAT0/status)"
+
+	test "$_status" = "Full"  || {
+		_ibat=
+		if [ $_charge -lt 20 ]; then
+			_ibat=
+		elif [ $_charge -lt 40 ]; then
+			_ibat=
+		elif [ $_charge -lt 60 ]; then
+			_ibat=
+		elif [ $_charge -lt 80 ]; then
+			_ibat=
+		fi
+
+		if [ "$_status" = "Charging" ]; then
+			_istat=""
+		elif [ "$_status" = "Discharging" ]; then
+			_istat=""
+		elif [ "$_status" = "Not charging" ]; then
+			_istat=""
+		fi
+
+		echo "$_ibat$_charge%"$_istat
+	}
 }

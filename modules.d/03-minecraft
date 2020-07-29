@@ -1,7 +1,11 @@
 condition() {
-	sleep 2m
+	sleep 1m
 }
 action() {
-	ssh kico 'docker exec -i $(docker ps | sed -nE "2s/(^[0-9a-f]*).*$/\1/p") rcon-cli list' |
-	sed -nr 's/There are ([0-9]+).*$/\1/p'
+	PLAYERS="$(
+		ssh kico 'docker exec -i $(docker ps |
+		sed -nE "2s/(^[0-9a-f]*).*$/\1/p") rcon-cli list' |
+		sed -nr 's/There are ([0-9]+).*$/\1/p'
+	)"
+	test "$PLAYERS" -gt 0 && echo "$PLAYERS"
 }
