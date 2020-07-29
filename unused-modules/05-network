@@ -1,0 +1,22 @@
+condition() {
+	sleep 1s
+}
+action() {
+	ifstat --json -t 1 | jq -r '[.kernel | .[] | {tx_bytes, rx_bytes} ][1:] |
+	reduce .[] as $item (
+		{"up": 0, "down":0};
+		{
+			"up": (.up + $item.tx_bytes),
+			"down": (.down + $item.rx_bytes)
+		}
+	) | map(
+		if . > 1000000 then
+			. /100000 | floor/10.0 | tostring | .+"M"
+		elif . > 1000 then
+			. /100 | floor/10.0 | tostring | .+"K"
+		else
+			. | tostring
+		end
+	) | "" + .[0] + " " + .[1]'
+	#here's hoping I'll never have to write another jq script
+}
