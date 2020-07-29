@@ -5,9 +5,18 @@ OUTFILE="$DIR/`basename $2`"
 
 . $2
 
+empty() {
+	test -z "$(echo $1 | tr -d '[:space:]')"
+}
+
 update() {
-	action > $OUTFILE
-	xsetroot -name "`sed "1n;s/^/ ╲ /g" $DIR/* | tr -d '\n'`"
+	BUF="$(action)"
+	if empty "$BUF"; then
+		rm -f $OUTFILE
+	else
+		echo "$BUF" > $OUTFILE
+		xsetroot -name "`sed "1n;s/^/ ╲ /g" $DIR/* | tr -d '\n'`"
+	fi
 }
 
 update
