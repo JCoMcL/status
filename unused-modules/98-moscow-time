@@ -1,0 +1,6 @@
+condition() {
+	sleep 1s
+}
+action() {
+	env TZ=Europe/Moscow date +'🇷🇺'%H:%M:%S
+}

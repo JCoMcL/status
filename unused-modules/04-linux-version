@@ -1,0 +1,6 @@
+condition() {
+	sleep 20
+}
+action() {
+	sh -c "curl https://www.kernel.org/ 2>/dev/null| pup '#latest_link a'" | sed -n 2p
+}
