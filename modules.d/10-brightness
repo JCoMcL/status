@@ -1,6 +1,6 @@
 condition() {
 	inotifywait -e CLOSE_WRITE \
-	/sys/class/backlight/intel_backlight/brightness
+	/sys/class/backlight/*/brightness
 }
 action() {
 	echo "`light | awk -F '.' '{print $1}'`%"

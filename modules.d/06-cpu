@@ -1,35 +1,33 @@
 numtobar() {
 	for NUM in $@; do
-		if [ $NUM -lt 1000 ]; then
+		if [ $NUM -lt 2 ]; then
 			printf '▓'
-		elif [ $NUM -lt 2000 ]; then
+		elif [ $NUM -lt 10 ]; then
 			printf '█'
-		elif [ $NUM -lt 3000 ]; then
+		elif [ $NUM -lt 20 ]; then
 			printf '▇'
-		elif [ $NUM -lt 4000 ]; then
+		elif [ $NUM -lt 30 ]; then
 			printf '▆'
-		elif [ $NUM -lt 5000 ]; then
+		elif [ $NUM -lt 40 ]; then
 			printf '▅'
-		elif [ $NUM -lt 6000 ]; then
+		elif [ $NUM -lt 50 ]; then
 			printf '▄'
-		elif [ $NUM -lt 7000 ]; then
+		elif [ $NUM -lt 60 ]; then
 			printf '▃'
-		elif [ $NUM -lt 8000 ]; then
+		elif [ $NUM -lt 70 ]; then
 			printf '▂'
-		elif [ $NUM -lt 9000 ]; then
+		elif [ $NUM -lt 80 ]; then
 			printf '▁'
-		else
-			printf ' '
+		elif [ $NUM -lt 90 ]; then
+			printf '_'
 		fi
 	done
 }
 condition() {
 	_IDLE=`
 		mpstat -P ALL 1 1 |
-		sed "1,4d;8q" |
-		awk '{print $13}' |
-		tr '\n' ' ' |
-		tr -d '.'
+		sed '1,4d;/^$/Q' |
+		awk '{printf "%d ",$12}'
 	`
 }
 action() {

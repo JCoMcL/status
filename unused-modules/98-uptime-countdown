@@ -1,0 +1,16 @@
+# this was created during a two-week period where a hardware fault caused my computer to shot down almost exactly every hour. I decided to make the most of it by turning it into a pomodoro timer.
+condition() {
+	sleep 1s
+}
+action() {
+	ps -ho etime 1 | awk '
+		function abs(v) {return v < 0 ? -v : v}
+	{
+		split($1, parts, ":")
+		seconds = 0
+		for (i = 0; i < length(parts); i++)
+			{seconds += parts[length(parts) -i] * (60 ** i)}
+		countdown = 3600 - seconds
+		printf ("⏱%.02d:%.02d\n", int(countdown/60), abs(countdown%60))
+	}'
+}

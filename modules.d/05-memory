@@ -4,7 +4,7 @@ condition() {
 action() {
 	free -m | awk '
 		/^Mem:/ {printf "%i%",($3/$2)*100};
-		/^Swap:/ {SWP=(($3/$2)*100);
+		/^Swap:/ {if($2 > 0) {SWP=(($3/$2)*100)};
 		if ( SWP > 10 )
 			{printf " %i%", SWP}
 		}'

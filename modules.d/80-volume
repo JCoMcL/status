@@ -1,12 +1,5 @@
 condition() {
-	sh -c '
-	 	echo "$$"	#print id of root process
-		exec pactl subscribe	#make root process
-	' | (
-		read pid 
-		sed -n /sink/q
-		kill $pid	#kill root process
-	)
+	sed -n /sink/q < <(timeout 10 pactl subscribe)
 }
 action() {
 	sinkname="`pactl info | sed -n 13p | awk '{print $3}'`"

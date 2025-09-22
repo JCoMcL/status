@@ -5,13 +5,11 @@ cd `dirname $0`
 # this directory is used by systemd for user specific memory
 # any tmpfs or ramfs would work just as well, though any filesystem can be used
 DIR="/run/user/`id -u`/status"
-rm $DIR/*
+rm -rf "$DIR"
 
-if [ ! -d $DIR ]; then
-	mkdir $DIR
-fi
+mkdir -p "$DIR"
 
-trap "kill 0" EXIT
+trap 'jobs -p | xargs -r kill' EXIT #clean up children
 
 for MODULE in `find modules.d/*`; do
 	echo $MODULE
