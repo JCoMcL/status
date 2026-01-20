@@ -1,0 +1,21 @@
+condition() {
+:
+}
+
+action() {
+	radeontop -b3 -d - -l1 2>/dev/null | awk -F'[, ]+' '{
+		for (i=1; i<=NF; i++) {
+			if ($i == "gpu") util = $(i+1);
+			if ($i == "vram") mem = $(i+2);
+		}
+		# Remove "mb" from the memory string and calculate GiB
+		gsub(/mb/, "", mem);
+		if (util > 10 || mem > 500) {
+			printf ""
+			if (util > 10)
+				printf "%d% ", util;
+			if (mem > 500)	
+				printf "%.1fG\n", mem/1024
+		}
+	}'
+}
