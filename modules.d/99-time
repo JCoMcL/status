@@ -1,6 +1,6 @@
-condition() {
-	sleep 1s
-}
-action() {
+#!/usr/bin/env sh
+
+while : ; do
 	date +%a' '%m-%d' '%H:%M:%S
-}
+	sleep 1s
+done

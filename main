@@ -1,19 +1,39 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 cd `dirname $0`
 
-# this directory is used by systemd for user specific memory
-# any tmpfs or ramfs would work just as well, though any filesystem can be used
 DIR="/run/user/`id -u`/status"
 rm -rf "$DIR"
-
 mkdir -p "$DIR"
 
-trap 'jobs -p | xargs -r kill' EXIT #clean up children
+update() {
+	xsetroot -name "$(paste  $DIR/* | sed -E 's/\t+/ ╲ /g')"
+}
 
-for MODULE in `find modules.d/*`; do
-	echo $MODULE
-	./common $DIR $MODULE &
+runmodule() {
+	cmd="$1"
+	modulename="$(basename "$cmd")"
+	modulepath="$(which "$cmd")"
+	statefile="$DIR/$modulename"
+	while test -x "$modulepath" && IFS= read -r line; do
+		echo $line > "$statefile"
+		update
+	done < <(stdbuf -oL $cmd) # stdbuf prevents buffering so output is always read line-by-line
+	# using the < <() trick to make exiting easier.
+
+	rm "$statefile"
+
+}
+
+cleanup() {
+	rm -r "$DIR"
+	xsetroot -name "statusbar stopped"
+	trap - SIGTERM && kill -- -$$
+}
+trap "cleanup" SIGINT SIGTERM EXIT
+
+for MODULE in `find modules.d/ -executable -type f`; do
+	runmodule $MODULE &
 done
 
 wait

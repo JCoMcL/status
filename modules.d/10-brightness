@@ -1,7 +1,6 @@
-condition() {
-	inotifywait -e CLOSE_WRITE \
-	/sys/class/backlight/*/brightness
-}
-action() {
+#!/usr/bin/env sh
+
+while : ; do
 	echo "`light | awk -F '.' '{print $1}'`%"
-}
+	inotifywait -e CLOSE_WRITE /sys/class/backlight/*/brightness
+done

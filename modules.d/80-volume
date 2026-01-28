@@ -1,11 +1,11 @@
-condition() {
-	sed -n /sink/q < <(timeout 10 pactl subscribe)
-}
-action() {
+#!/usr/bin/env sh
+
+while : ; do
 	sinkname="`pactl info | sed -n 13p | awk '{print $3}'`"
-	
 	pactl list sinks |
 	sed -n "/$sinkname/{n;p;n;n;n;n;n;n;p;q}" |
 	tr -d '\n' | 
 	awk '{print ""$2" "$(NF-3)}'
-}
+
+	sed -n /sink/q < <(timeout 10 pactl subscribe)
+done

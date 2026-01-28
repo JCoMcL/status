@@ -1,12 +1,9 @@
-condition() {
-	sleep 0.2
-}
-action() {
-	free -m | awk '
+#!/usr/bin/env sh
+
+free -s 0.2 -m | awk '
 		/^Mem:/ {printf "%i%",($3/$2)*100};
 		/^Swap:/ {if($2 > 0) {SWP=(($3/$2)*100)};
 		if ( SWP > 10 )
-			{printf " %i%", SWP}
+			printf " %i%", SWP;
+		printf "\n";
 		}'
-	echo
-}

@@ -1,9 +1,0 @@
-#!/usr/bin/env sh
-
-. $1
-
-action
-while condition; do
-	action
-done
-

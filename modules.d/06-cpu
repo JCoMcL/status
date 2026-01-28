@@ -1,36 +1,40 @@
-numtobar() {
-	for NUM in $@; do
-		if [ $NUM -lt 2 ]; then
-			printf '▓'
-		elif [ $NUM -lt 10 ]; then
-			printf '█'
-		elif [ $NUM -lt 20 ]; then
-			printf '▇'
-		elif [ $NUM -lt 30 ]; then
-			printf '▆'
-		elif [ $NUM -lt 40 ]; then
-			printf '▅'
-		elif [ $NUM -lt 50 ]; then
-			printf '▄'
-		elif [ $NUM -lt 60 ]; then
-			printf '▃'
-		elif [ $NUM -lt 70 ]; then
-			printf '▂'
-		elif [ $NUM -lt 80 ]; then
-			printf '▁'
-		elif [ $NUM -lt 90 ]; then
-			printf '_'
-		fi
-	done
-}
-condition() {
-	_IDLE=`
-		mpstat -P ALL 1 1 |
-		sed '1,4d;/^$/Q' |
-		awk '{printf "%d ",$12}'
-	`
-}
-action() {
-	numtobar $_IDLE
-	echo
-}
+#!/usr/bin/env sh
+
+mpstat -P ALL -o JSON 1 |
+jq --stream --raw-output --unbuffered '
+	fromstream(6|truncate_stream(inputs)) |
+	reduce .[] as $item (
+		"";
+		.  + " " + ($item.idle | tostring)
+	)
+' | awk '
+	function numtobar (f) {
+		if ( f < 2 )
+			return "▓";
+		if ( f < 10 )
+			return "█";
+		if ( f < 20 )
+			return "▇";
+		if ( f < 30 )
+			return "▆";
+		if ( f < 40 )
+			return "▅";
+		if ( f < 50 )
+			return "▄";
+		if ( f < 60 )
+			return "▃";
+		if ( f < 70 )
+			return "▂";
+		if ( f < 80 )
+			return "▁";
+		if ( f < 90 )
+			return "_";
+		return "";
+	}
+	{
+		for(i=1;i<NF;i++)
+			printf numtobar($i) ;
+		printf "\n"
+	}
+'
+

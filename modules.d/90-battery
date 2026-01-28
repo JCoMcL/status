@@ -1,7 +1,5 @@
-condition() {
-	sed -n /battery/q < <(acpi_listen -t 60) #this syntax forces acpi_listen to close right away rather than waiting until the next line to discover the brokwen pipe
-}
-action() {
+#!/usr/bin/env sh
+while : ; do
 	_charge="$(cat /sys/class/power_supply/BAT*/capacity)"
 	_status="$(cat /sys/class/power_supply/BAT*/status)"
 
@@ -27,4 +25,5 @@ action() {
 
 		echo "$_ibat$_charge%"$_istat
 	}
-}
+	sed -n /battery/q < <(acpi_listen -t 60) #this syntax forces acpi_listen to close right away rather than waiting until the next line to discover the brokwen pipe
+done
